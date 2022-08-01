@@ -2,6 +2,7 @@
 [![Actions Status](https://github.com/ruslanrust/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/ruslanrust/frontend-project-lvl2/actions)
 [![Node CI](https://github.com/ruslanrust/frontend-project-lvl2/actions/workflows/nodeci.yml/badge.svg)](https://github.com/ruslanrust/frontend-project-lvl2/actions/workflows/nodeci.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/e38d36b44962ef5182e0/maintainability)](https://codeclimate.com/github/ruslanrust/frontend-project-lvl2/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/e38d36b44962ef5182e0/test_coverage)](https://codeclimate.com/github/ruslanrust/frontend-project-lvl2/test_coverage)
 
 ## Usage example
 
