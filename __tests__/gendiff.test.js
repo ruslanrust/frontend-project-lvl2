@@ -9,20 +9,24 @@ const __dirname = path.dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-test('nested json data', () => {
-  const expected = readFile('nested.txt');
-  const filepath1 = getFixturePath('file1.json');
-  const filepath2 = getFixturePath('file2.json');
+test.each([
+  ['file1.json', 'file2.json', 'stylish.txt'],
+  ['file1.yml', 'file2.yml', 'stylish.txt'],
+])('format stylish', (testFile1, testFile2, expectedFile) => {
+  const filepath1 = getFixturePath(testFile1);
+  const filepath2 = getFixturePath(testFile2);
   const actual = genDiff(filepath1, filepath2);
-
-  expect(actual).toEqual(expected);
+  const expected = readFile(expectedFile);
+  expect(actual).toBe(expected);
 });
 
-test('nested yaml data', () => {
-  const expected = readFile('nested.txt');
-  const filepath1 = getFixturePath('file1.yml');
-  const filepath2 = getFixturePath('file2.yml');
-  const actual = genDiff(filepath1, filepath2);
-
-  expect(actual).toEqual(expected);
+test.each([
+  ['file1.json', 'file2.json', 'plain.txt'],
+  ['file1.yml', 'file2.yml', 'plain.txt'],
+])('format plain', (testFile1, testFile2, expectedFile) => {
+  const filepath1 = getFixturePath(testFile1);
+  const filepath2 = getFixturePath(testFile2);
+  const actual = genDiff(filepath1, filepath2, 'plain');
+  const expected = readFile(expectedFile);
+  expect(actual).toBe(expected);
 });
