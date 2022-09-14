@@ -11,27 +11,27 @@ const formatStylish = (tree, spacesCount = 4, replacer = ' ') => {
     const entries = Object.entries(node);
 
     const lines = entries.map(([entriesKey, entriesValue]) => {
-      const { type } = entriesValue;
+      const { type, key } = entriesValue;
 
       switch (type) {
         case 'nested': {
-          const { key, children } = entriesValue;
+          const { children } = entriesValue;
           return `${currentIndent}  ${key}: ${iter(children, depth + 1)}`;
         }
         case 'added': {
-          const { key, value } = entriesValue;
+          const { value } = entriesValue;
           return `${currentIndent}+ ${key}: ${iter(value, depth + 1)}`;
         }
         case 'deleted': {
-          const { key, value } = entriesValue;
+          const { value } = entriesValue;
           return `${currentIndent}- ${key}: ${iter(value, depth + 1)}`;
         }
         case 'changed': {
-          const { key, valueBefore, valueAfter } = entriesValue;
+          const { valueBefore, valueAfter } = entriesValue;
           return `${currentIndent}- ${key}: ${iter(valueBefore, depth + 1)}\n${currentIndent}+ ${key}: ${iter(valueAfter, depth + 1)}`;
         }
         case 'unchanged': {
-          const { key, value } = entriesValue;
+          const { value } = entriesValue;
           return `${currentIndent}  ${key}: ${iter(value, depth + 1)}`;
         }
         default:

@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import _ from 'lodash';
 import parse from './parsers.js';
-import formatStylish from './stylish.js';
+import format from './formatters/index.js';
 
 const getData = (filepath) => {
   const fullpath = path.resolve(process.cwd(), filepath);
@@ -11,8 +11,8 @@ const getData = (filepath) => {
 
 const getObject = (filepath) => {
   const data = getData(filepath);
-  const format = path.extname(filepath);
-  const object = parse(data, format);
+  const extension = path.extname(filepath);
+  const object = parse(data, extension);
   return object;
 };
 
@@ -44,17 +44,12 @@ const buildTree = (obj1, obj2) => {
   return result;
 };
 
-const genDiff = (filepath1, filepath2, format = 'stylish') => {
+const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
   const object1 = getObject(filepath1);
   const object2 = getObject(filepath2);
-  const tree = buildTree(object1, object2);
+  const diff = buildTree(object1, object2);
 
-  switch (format) {
-    case 'stylish':
-      return formatStylish(tree);
-    default:
-      throw new Error(`format ${format} - unsupported`);
-  }
+  return format(diff, formatName);
 };
 
 export default genDiff;
