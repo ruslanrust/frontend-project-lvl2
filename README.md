@@ -7,9 +7,9 @@
 The solution for displaying differences in two **json** and **yaml** files.
 
 ##  Installation
-
 ```sh
-make install
+1. git clone git@github.com:ruslanrust/frontend-project-lvl2.git
+2. make install #from project directory
 ```
 
 ## Usage example
