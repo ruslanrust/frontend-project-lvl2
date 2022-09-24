@@ -15,22 +15,21 @@ const normalize = (value) => {
 const formatPlain = (tree) => {
   const iter = (node, path) => {
     const lines = node.flatMap((data) => {
-      const { type, key } = data;
+      const {
+        type, key, value, valueBefore, valueAfter, children,
+      } = data;
 
       switch (type) {
         case 'nested': {
-          const { children } = data;
           return iter(children, `${path}${key}.`);
         }
         case 'added': {
-          const { value } = data;
           return `Property '${path}${key}' was added with value: ${normalize(value)}`;
         }
         case 'deleted': {
           return `Property '${path}${key}' was removed`;
         }
         case 'changed': {
-          const { valueBefore, valueAfter } = data;
           return `Property '${path}${key}' was updated. From ${normalize(valueBefore)} to ${normalize(valueAfter)}`;
         }
         default:

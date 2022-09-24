@@ -9,35 +9,20 @@ const __dirname = path.dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-test.each([
-  ['file1.json', 'file2.json', 'stylish.txt'],
-  ['file1.yml', 'file2.yml', 'stylish.txt'],
-])('format stylish', (testFile1, testFile2, expectedFile) => {
-  const filepath1 = getFixturePath(testFile1);
-  const filepath2 = getFixturePath(testFile2);
-  const actual = genDiff(filepath1, filepath2);
-  const expected = readFile(expectedFile);
-  expect(actual).toBe(expected);
-});
+const expectedStylish = readFile('stylish.txt');
+const expectedPlain = readFile('plain.txt');
+const expectedJSON = readFile('json.txt');
+
+const extensions = ['yml', 'json'];
 
 test.each([
-  ['file1.json', 'file2.json', 'plain.txt'],
-  ['file1.yml', 'file2.yml', 'plain.txt'],
-])('format plain', (testFile1, testFile2, expectedFile) => {
-  const filepath1 = getFixturePath(testFile1);
-  const filepath2 = getFixturePath(testFile2);
-  const actual = genDiff(filepath1, filepath2, 'plain');
-  const expected = readFile(expectedFile);
-  expect(actual).toBe(expected);
-});
+  extensions,
+])('main test', (extension) => {
+  const filepath1 = getFixturePath(`before.${extension}`);
+  const filepath2 = getFixturePath(`after.${extension}`);
 
-test.each([
-  ['file1.json', 'file2.json', 'json.txt'],
-  ['file1.yml', 'file2.yml', 'json.txt'],
-])('format JSON', (testFile1, testFile2, expectedFile) => {
-  const filepath1 = getFixturePath(testFile1);
-  const filepath2 = getFixturePath(testFile2);
-  const actual = genDiff(filepath1, filepath2, 'json');
-  const expected = readFile(expectedFile);
-  expect(actual).toBe(expected);
+  expect(genDiff(filepath1, filepath2)).toBe(expectedStylish);
+  expect(genDiff(filepath1, filepath2, 'stylish')).toBe(expectedStylish);
+  expect(genDiff(filepath1, filepath2, 'plain')).toBe(expectedPlain);
+  expect(genDiff(filepath1, filepath2, 'json')).toBe(expectedJSON);
 });
