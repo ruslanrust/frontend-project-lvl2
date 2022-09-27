@@ -1,41 +1,49 @@
 import _ from 'lodash';
 
-const formatStylish = (tree, spacesCount = 4, replacer = ' ') => {
-  const iter = (node, depth) => {
-    if (!_.isObject(node)) {
-      return `${node}`;
-    }
-    const indentSize = depth * spacesCount;
-    const currentIndent = replacer.repeat(indentSize - 2);
-    const bracketIndent = replacer.repeat(indentSize - spacesCount);
-    const entries = Object.entries(node);
+const replacer = ' ';
+const spacesCount = 4;
 
-    const lines = entries.map(([entriesKey, entriesValue]) => {
+const getIndent = (depth) => replacer.repeat(depth * spacesCount - 2);
+const getBracketIndent = (depth) => replacer.repeat(depth * spacesCount - spacesCount);
+
+const stringify = (data, depth) => {
+  if (!_.isObject(data)) {
+    return `${data}`;
+  }
+  const entries = Object.entries(data);
+  const lines = entries.map(([key, value]) => `${getIndent(depth)}  ${key}: ${stringify(value, depth + 1)}`);
+
+  return ['{', ...lines, `${getBracketIndent(depth)}}`].join('\n');
+};
+
+const formatStylish = (tree) => {
+  const iter = (node, depth) => {
+    const lines = node.map((data) => {
       const {
         type, key, value, valueBefore, valueAfter, children,
-      } = entriesValue;
+      } = data;
 
       switch (type) {
         case 'nested': {
-          return `${currentIndent}  ${key}: ${iter(children, depth + 1)}`;
+          return `${getIndent(depth)}  ${key}: ${iter(children, depth + 1)}`;
         }
         case 'added': {
-          return `${currentIndent}+ ${key}: ${iter(value, depth + 1)}`;
+          return `${getIndent(depth)}+ ${key}: ${stringify(value, depth + 1)}`;
         }
         case 'deleted': {
-          return `${currentIndent}- ${key}: ${iter(value, depth + 1)}`;
+          return `${getIndent(depth)}- ${key}: ${stringify(value, depth + 1)}`;
         }
         case 'changed': {
-          return `${currentIndent}- ${key}: ${iter(valueBefore, depth + 1)}\n${currentIndent}+ ${key}: ${iter(valueAfter, depth + 1)}`;
+          return `${getIndent(depth)}- ${key}: ${stringify(valueBefore, depth + 1)}\n${getIndent(depth)}+ ${key}: ${stringify(valueAfter, depth + 1)}`;
         }
         case 'unchanged': {
-          return `${currentIndent}  ${key}: ${iter(value, depth + 1)}`;
+          return `${getIndent(depth)}  ${key}: ${stringify(value, depth + 1)}`;
         }
         default:
-          return `${currentIndent}  ${entriesKey}: ${iter(entriesValue, depth + 1)}`;
+          throw new Error(`Type ${type} is unknown`);
       }
     });
-    return ['{', ...lines, `${bracketIndent}}`].join('\n');
+    return ['{', ...lines, `${getBracketIndent(depth)}}`].join('\n');
   };
 
   return iter(tree, 1);
